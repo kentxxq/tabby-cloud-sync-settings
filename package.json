@@ -1,9 +1,10 @@
 {
-  "name": "terminus-cloud-settings-sync",
-  "version": "1.6.5",
-  "date": "14th October 2024",
-  "description": "Cloud Services sync the Tabby config and connections across platform devices.",
+  "name": "tabby-sync-kentxxq",
+  "version": "1.6.6",
+  "date": "5th March 2026",
+  "description": "Sync Tabby terminal config and connections across devices via WebDAV and other cloud services. (Fork by kentxxq)",
   "keywords": [
+    "tabby-plugin",
     "terminus-plugin"
   ],
   "main": "dist/index.js",
@@ -19,9 +20,9 @@
   "files": [
     "dist"
   ],
-  "author": "TranIT - tran.tuan@tranit.co",
-  "support_url": "https://tabby-sync.github.io/",
-  "github_url": "https://www.github.com/niceit/tabby-cloud-sync-settings",
+  "author": "kentxxq",
+  "support_url": "https://github.com/kentxxq/tabby-cloud-sync-settings",
+  "github_url": "https://github.com/kentxxq/tabby-cloud-sync-settings",
   "license": "MIT",
   "devDependencies": {
     "@angular/animations": "^7.2.8",
@@ -49,10 +50,10 @@
     "keytar": "^7.6.0",
     "moment": "^2.29.3",
     "ngx-toastr": "^8.8.0",
-    "node-sass": "^5.0.0",
     "pug": "^3.0.2",
     "pug-loader": "^2.4.0",
     "rxjs": "^6.2.1",
+    "sass": "1.77.8",
     "sass-loader": "^11.0.1",
     "semver": "^7.3.8",
     "strip-ansi": "^5.0.0",
@@ -65,7 +66,7 @@
     "ts-loader": "^9.2.3",
     "typescript": "^4.3.5",
     "webdav": "^4.6.0",
-    "webpack": "^5.24.4",
+    "webpack": "^5.88.2",
     "webpack-cli": "^4.5.0",
     "winston": "^3.3.3"
   },
@@ -74,7 +75,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/niceit/tabby-cloud-sync-settings.git"
+    "url": "git+https://github.com/kentxxq/tabby-cloud-sync-settings.git"
   },
   "dependencies": {
     "crypto-js": "^4.0.0",
@@ -84,7 +85,7 @@
     "registry": "https://registry.npmjs.org"
   },
   "bugs": {
-    "url": "https://github.com/niceit/tabby-cloud-sync-settings/issues"
+    "url": "https://github.com/kentxxq/tabby-cloud-sync-settings/issues"
   },
-  "homepage": "https://tabby-sync.github.io/"
+  "homepage": "https://github.com/kentxxq/tabby-cloud-sync-settings"
 }

@@ -1,21 +1,21 @@
-# Tabby Sync Cloud Settings
+# Tabby Sync Cloud Settings (Fork)
 
-----
+本项目是 [niceit/tabby-cloud-sync-settings](https://github.com/niceit/tabby-cloud-sync-settings) 的 fork 版本。
 
-#### ❤️ If you love the project, please Sponsor it so I will have self-fund to keep it long live development. Thanks so much! ❤️
+### 为什么会有这个 fork？
+
+由于原仓库的 WebDAV 同步功能存在问题，本项目对其进行了修复，以确保在 Tabby 中能正常同步配置。
+
+---
 
 ### Plugin for Tabby SSH https://github.com/Eugeny/tabby
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/terminus-cloud-settings-sync"><img alt="npm" src="https://img.shields.io/npm/v/terminus-cloud-settings-sync?label=npmjs"></a>
-  <a href="https://tabby-cloud.tranit.co/"><img src="https://img.shields.io/static/v1?label=Support URL&message=Visit TranIt.co&color=#333"/></a> &nbsp;
-  <img alt="GitHub" src="https://img.shields.io/github/license/niceit/tabby-cloud-sync-settings">
-  <img alt="Scrutinizer code quality (GitHub/Bitbucket)" src="https://img.shields.io/scrutinizer/quality/g/niceit/tabby-cloud-sync-settings">
-  <a href="https://www.codefactor.io/repository/github/niceit/tabby-cloud-sync-settings"><img src="https://www.codefactor.io/repository/github/niceit/tabby-cloud-sync-settings/badge" alt="CodeFactor" /></a>
-  <img alt="npm" src="https://img.shields.io/npm/dt/terminus-cloud-settings-sync">
+  <a href="https://github.com/kentxxq/tabby-cloud-sync-settings"><img alt="GitHub" src="https://img.shields.io/github/license/kentxxq/tabby-cloud-sync-settings"></a>
+  <img alt="GitHub stars" src="https://img.shields.io/github/stars/kentxxq/tabby-cloud-sync-settings">
 </p>
 
-With this plugin you could sync your settings (Including saved SSH Sessions) automatically across devices.
+使用此插件，您可以跨设备自动同步您的设置（包括保存的 SSH 会话）。
 
 Current platforms supported: **MacOS** **Windows** **Linux**
 
@@ -64,6 +64,11 @@ Hope you will like this plugin for your productivity work.
 ----
 
 Keep tracking of version release change logs
+
+## [v1.6.6] - 2026-03-05
+
+- 修复了 WebDAV 同步问题。
+- 说明 fork 来源。
 
 ## [v1.6.5] - 2024-10-14
 

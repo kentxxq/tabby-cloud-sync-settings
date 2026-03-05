@@ -5,11 +5,11 @@ import { SettingsTabProvider } from 'terminus-settings'
 import CloudSyncLang from './data/lang'
 @Injectable()
 export class SyncConfigSettingsTabProvider extends SettingsTabProvider {
-    id = 'cloud-settings-sync'
+    id = 'tabby-sync-kentxxq'
     icon = 'cogs'
     title = CloudSyncLang.trans('common.menu_title')
 
-    getComponentType (): any {
+    getComponentType(): any {
         return CloudSyncSettingsComponent
     }
 }

@@ -36,11 +36,11 @@ export class CloudSyncWebDavSettingsComponent implements OnInit {
 
     form: formData = CloudSyncSettingsData.formData[CloudSyncSettingsData.values.WEBDAV] as formData
 
-    constructor (private config: ConfigService, private platform: PlatformService, private toast: ToastrService) {
+    constructor(private config: ConfigService, private platform: PlatformService, private toast: ToastrService) {
 
     }
 
-    ngOnInit (): void {
+    ngOnInit(): void {
         const configs = SettingsHelper.readConfigFile(this.platform)
         if (configs) {
             if (configs.adapter === this.presetData.values.WEBDAV) {
@@ -51,7 +51,7 @@ export class CloudSyncWebDavSettingsComponent implements OnInit {
         this.isPreloadingSavedConfig = false
     }
 
-    async testConnection (): Promise<void> {
+    async testConnection(): Promise<void> {
         const logger = new Logger(this.platform)
         this.resetFormMessages.emit()
         let isFormValidated = true
@@ -67,7 +67,7 @@ export class CloudSyncWebDavSettingsComponent implements OnInit {
         }
 
         if (isFormValidated) {
-            const client = createClient(this.form.host + (this.form.port ? ':'+ this.form.port : ''), {
+            const client = createClient(this.form.host + (this.form.port ? ':' + this.form.port : ''), {
                 authType: AuthType.Password,
                 username: this.form.username,
                 password: this.form.password,
@@ -100,7 +100,7 @@ export class CloudSyncWebDavSettingsComponent implements OnInit {
         }
     }
 
-    async saveSettings (): Promise<void> {
+    async saveSettings(): Promise<void> {
         this.resetFormMessages.emit()
         this.isFormProcessing = true
         SettingsHelper.saveSettingsToFile(this.platform, CloudSyncSettingsData.values.WEBDAV, this.form).then(result => {
@@ -137,7 +137,7 @@ export class CloudSyncWebDavSettingsComponent implements OnInit {
         })
     }
 
-    async uploadLocalSettings (): Promise<void> {
+    async uploadLocalSettings(): Promise<void> {
         this.resetFormMessages.emit()
         this.isFormProcessing = true
         SettingsHelper.saveSettingsToFile(this.platform, CloudSyncSettingsData.values.WEBDAV, this.form).then(result => {
@@ -174,12 +174,12 @@ export class CloudSyncWebDavSettingsComponent implements OnInit {
         })
     }
 
-    cancelSaveSettings (): void {
+    cancelSaveSettings(): void {
         this.resetFormMessages.emit()
         this.isCheckLoginSuccess = false
     }
 
-    async removeSavedSettings (): Promise<void> {
+    async removeSavedSettings(): Promise<void> {
         this.resetFormMessages.emit()
         const result = await SettingsHelper.removeConfirmFile(this.platform, this.toast)
         if (result) {
@@ -187,6 +187,73 @@ export class CloudSyncWebDavSettingsComponent implements OnInit {
             this.isCheckLoginSuccess = false
             this.isPreloadingSavedConfig = false
             this.config.requestRestart()
+        }
+    }
+
+    // 手动触发从云端同步到本地 (Manual sync from cloud to local)
+    async manualSyncFromCloud(): Promise<void> {
+        const logger = new Logger(this.platform)
+        this.resetFormMessages.emit()
+        this.isSyncingProgress = true
+        logger.log('Manual sync triggered: Cloud to Local')
+        try {
+            await SettingsHelper.syncWithCloud(this.config, this.platform, this.toast, false).then((result) => {
+                const resultCheck = typeof result === 'boolean' ? result : result['result']
+                if (resultCheck) {
+                    this.setFormMessage.emit({
+                        message: 'Sync from cloud completed successfully.',
+                        type: 'success',
+                    })
+                    logger.log('Manual sync from cloud completed successfully.')
+                } else {
+                    this.setFormMessage.emit({
+                        message: typeof result !== 'boolean' && result['message'] ? result['message'] : 'Sync from cloud failed.',
+                        type: 'error',
+                    })
+                    logger.log('Manual sync from cloud failed.', 'error')
+                }
+                this.isSyncingProgress = false
+            })
+        } catch (e) {
+            this.isSyncingProgress = false
+            this.setFormMessage.emit({
+                message: 'Sync error: ' + e.toString(),
+                type: 'error',
+            })
+            logger.log('Manual sync from cloud error: ' + e.toString(), 'error')
+        }
+    }
+
+    // 手动触发从本地同步到云端 (Manual sync from local to cloud)
+    async manualSyncToCloud(): Promise<void> {
+        const logger = new Logger(this.platform)
+        this.resetFormMessages.emit()
+        this.isSyncingProgress = true
+        logger.log('Manual sync triggered: Local to Cloud')
+        try {
+            await WebDav.syncLocalSettingsToCloud(this.platform, this.toast).then((result) => {
+                if (result) {
+                    this.setFormMessage.emit({
+                        message: 'Local settings pushed to cloud successfully.',
+                        type: 'success',
+                    })
+                    logger.log('Manual sync to cloud completed successfully.')
+                } else {
+                    this.setFormMessage.emit({
+                        message: 'Push to cloud failed. Check logs for details.',
+                        type: 'error',
+                    })
+                    logger.log('Manual sync to cloud failed.', 'error')
+                }
+                this.isSyncingProgress = false
+            })
+        } catch (e) {
+            this.isSyncingProgress = false
+            this.setFormMessage.emit({
+                message: 'Sync error: ' + e.toString(),
+                type: 'error',
+            })
+            logger.log('Manual sync to cloud error: ' + e.toString(), 'error')
         }
     }
 }

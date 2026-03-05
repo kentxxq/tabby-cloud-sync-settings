@@ -86,6 +86,15 @@
             span.spinner-border.spinner-border-sm.mr-2
             span([textContent]='translate.trans("buttons.cloud_syncing_progress")')
 
-        button.btn.btn-danger.flex-shrink-0.ml-3.mb-2(*ngIf='!isSyncingProgress', (click)='removeSavedSettings()')
-            i.fas.fa-fw.fa-times-circle.mr-2
-            span([textContent]='translate.trans("buttons.remove_saved_setting")')
+        .col-md-12(*ngIf='!isSyncingProgress')
+            button.btn.btn-info.flex-shrink-0.ml-3.mb-2((click)='manualSyncFromCloud()')
+                i.fas.fa-fw.fa-cloud-download-alt.mr-2
+                span Sync from Cloud
+
+            button.btn.btn-success.flex-shrink-0.ml-3.mb-2((click)='manualSyncToCloud()')
+                i.fas.fa-fw.fa-cloud-upload-alt.mr-2
+                span Sync to Cloud
+
+            button.btn.btn-danger.flex-shrink-0.ml-3.mb-2((click)='removeSavedSettings()')
+                i.fas.fa-fw.fa-times-circle.mr-2
+                span([textContent]='translate.trans("buttons.remove_saved_setting")')

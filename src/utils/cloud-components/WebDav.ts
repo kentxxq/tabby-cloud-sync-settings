@@ -13,7 +13,7 @@ import moment from 'moment'
 
 let isSyncingInProgress = false
 class WebDav {
-    async sync (config: ConfigService, platform: PlatformService, toast: ToastrService, params, firstInit = false) {
+    async sync(config: ConfigService, platform: PlatformService, toast: ToastrService, params, firstInit = false) {
         const logger = new Logger(platform)
         const result = { result: false, message: '' }
         const client = WebDav.createClient(params)
@@ -52,27 +52,25 @@ class WebDav {
                         } else {
                             const filePath = path.dirname(platform.getConfigPath()) + CloudSyncSettingsData.tabbySettingsFilename
                             let localFileUpdatedAt = null
-                            // eslint-disable-next-line @typescript-eslint/await-thenable,@typescript-eslint/no-confusing-void-expression
-                            await fs.stat(filePath, (err, stats: any) => {
-                                //Checking for errors
-                                // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-                                if (err){
-                                    logger.log(err)
-                                } else {
-                                    localFileUpdatedAt = moment(stats.mtime)
-                                    logger.log('Auto Sync WebDav')
-                                    logger.log('Server Updated At ' + (remoteSyncConfigUpdatedAt ? remoteSyncConfigUpdatedAt.format('YYYY-MM-DD HH:mm:ss') : null))
-                                    logger.log('Local Updated At '+ localFileUpdatedAt.format('YYYY-MM-DD HH:mm:ss'))
+                            try {
+                                // 使用 statSync 替代回调版 fs.stat，确保同步逻辑正确执行
+                                const stats = fs.statSync(filePath)
+                                localFileUpdatedAt = moment(stats.mtime)
+                                logger.log('Auto Sync WebDav')
+                                logger.log('Remote file: ' + remoteFile)
+                                logger.log('Server Updated At ' + (remoteSyncConfigUpdatedAt ? remoteSyncConfigUpdatedAt.format('YYYY-MM-DD HH:mm:ss') : null))
+                                logger.log('Local Updated At ' + localFileUpdatedAt.format('YYYY-MM-DD HH:mm:ss'))
 
-                                    if (remoteSyncConfigUpdatedAt && remoteSyncConfigUpdatedAt > localFileUpdatedAt) {
-                                        logger.log('Sync direction: Cloud to local.')
-                                        config.writeRaw(SettingsHelper.doDescryption(content))
-                                    } else {
-                                        logger.log('Sync direction: Local To Cloud.')
-                                        this.syncLocalSettingsToCloud(platform, toast)
-                                    }
+                                if (remoteSyncConfigUpdatedAt && remoteSyncConfigUpdatedAt > localFileUpdatedAt) {
+                                    logger.log('Sync direction: Cloud to local.')
+                                    config.writeRaw(SettingsHelper.doDescryption(content))
+                                } else {
+                                    logger.log('Sync direction: Local To Cloud.')
+                                    await this.syncLocalSettingsToCloud(platform, toast)
                                 }
-                            })
+                            } catch (statErr) {
+                                logger.log('Error reading local config file: ' + statErr.toString(), 'error')
+                            }
                             result['result'] = true
                         }
                     } catch (e) {
@@ -86,10 +84,12 @@ class WebDav {
                 })
             })
         } catch (e) {
-            logger.log(CloudSyncLang.trans('log.read_cloud_settings') + ' | Exception: ' + e.toString())
+            logger.log(CloudSyncLang.trans('log.read_cloud_settings') + ' | Remote file: ' + remoteFile + ' | Exception: ' + e.toString())
             try {
                 await client.putFileContents(remoteFile, SettingsHelper.readTabbyConfigFile(platform, true, true), { overwrite: true })
+                isAbleToLoadRemoteContent = true
                 result['result'] = true
+                logger.log('Local config uploaded to cloud successfully after stat failure.')
             } catch (exception) {
                 logger.log(CloudSyncLang.trans('log.error_upload_settings') + ' | Exception: ' + exception.toString(), 'error')
             }
@@ -112,7 +112,7 @@ class WebDav {
         return result
     }
 
-    async syncLocalSettingsToCloud (platform: PlatformService, toast: ToastrService) {
+    async syncLocalSettingsToCloud(platform: PlatformService, toast: ToastrService) {
         const logger = new Logger(platform)
         if (!isSyncingInProgress) {
             isSyncingInProgress = true
@@ -130,18 +130,18 @@ class WebDav {
             } catch (e) {
                 logger.log(CloudSyncLang.trans('log.error_upload_settings') + ' | Exception: ' + e.toString(), 'error')
                 toast.error(CloudSyncLang.trans('sync.sync_error'))
-                // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-                if (isSyncingInProgress) {
-                    logger.log(CloudSyncLang.trans('sync.sync_success'))
-                }
+            } finally {
+                // 确保锁一定被释放，无论成功还是失败 (ensure lock is always released)
+                isSyncingInProgress = false
             }
-            isSyncingInProgress = false
+        } else {
+            logger.log('Sync to cloud skipped: another sync is already in progress.')
         }
 
         return false
     }
 
-    private static createClient (params) {
+    private static createClient(params) {
         return createClient(params.host + (params.port ? ':' + params.port : ''), {
             authType: AuthType.Password,
             username: params.username,

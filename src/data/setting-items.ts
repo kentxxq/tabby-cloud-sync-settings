@@ -29,13 +29,13 @@ const amazonCompatibilityEndpoints = {
 }
 
 const DevEnv = DevEnvConstants
-const API_URL = `${DevEnv.ENABLE_DEBUG ? 'http' : 'https' }://tabby-api.tranit.${DevEnv.ENABLE_DEBUG ? 'local': 'co'}`
+const API_URL = `${DevEnv.ENABLE_DEBUG ? 'http' : 'https'}://tabby-api.tranit.${DevEnv.ENABLE_DEBUG ? 'local' : 'co'}`
 
 const CloudSyncSettingsData = {
     defaultSyncInterval: 20, // 20 seconds
     tabbySettingsFilename: '/config.yaml',
-    storedSettingsFilename: '/sync-settings' + (DevEnv.ENABLE_DEBUG ? '-dev': '') + '.json',
-    cloudSettingsFilename: '/tabby-settings' + (DevEnv.ENABLE_DEBUG ? '-dev': '') + '.json',
+    storedSettingsFilename: '/tabby-sync-kentxxq-settings' + (DevEnv.ENABLE_DEBUG ? '-dev' : '') + '.json',
+    cloudSettingsFilename: '/tabby-sync-kentxxq-cloud' + (DevEnv.ENABLE_DEBUG ? '-dev' : '') + '.json',
     tabbyLocalEncryptedFile: '/tabby-settings-encrypted.tmp',
     values: providerConstantItems,
     amazonEndpoints: amazonCompatibilityEndpoints,
@@ -150,7 +150,7 @@ const CloudSyncSettingsData = {
         BlackBlazeHelp: API_URL + '/how-to-get-blackblaze-regtion-code/',
         checkForUpdateUrl: API_URL + '/tabby-sync/check-for-updates'
     },
-    isCloudStorageS3Compatibility (provider: string): boolean {
+    isCloudStorageS3Compatibility(provider: string): boolean {
         return amazonS3CompatibilityInstances.includes(provider)
     },
     gistUrls: {
@@ -164,7 +164,7 @@ const CloudSyncSettingsData = {
         gitlab: 'https://gitlab.com/api/v4/snippets',
 
     },
-    donationUrl: 'https://donorbox.org/tabby-cloud-sync-settings-donation',
-    pluginUrl: 'https://tabby-cloud.tranit.co',
+    donationUrl: '',
+    pluginUrl: 'https://github.com/kentxxq/tabby-cloud-sync-settings',
 }
 export default CloudSyncSettingsData
