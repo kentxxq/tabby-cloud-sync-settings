@@ -82,6 +82,10 @@ Hope you will like this plugin for your productivity work.
 
 Keep tracking of version release change logs
 
+## [v1.6.7] - 2026-03-05
+
+- 更新 README.md 中的安装指南与注意事项。
+
 ## [v1.6.6] - 2026-03-05
 
 - 修复了 WebDAV 同步问题。
