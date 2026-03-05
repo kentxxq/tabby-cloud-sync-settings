@@ -6,6 +6,23 @@
 
 由于原仓库的 WebDAV 同步功能存在问题，本项目对其进行了修复，以确保在 Tabby 中能正常同步配置。
 
+## 如何安装 (Installation)
+
+由于本插件已发布至 npm，你可以直接在 Tabby 内部进行安装：
+
+1. 打开 Tabby 终端。
+2. 进入 **Settings (设置)** -> **Plugins (插件)**。
+3. 在搜索框中输入 `kentxxq` 或 `tabby-sync-kentxxq`。
+4. 找到 **tabby-sync-kentxxq** 并点击 **Install (安装)**。
+5. 重启 Tabby 以使插件生效。
+
+> [!IMPORTANT]
+> **使用建议与注意事项**：
+> 1. **配置独立性**：本插件使用的配置字段与原版不同，**不会读取** `terminus-cloud-settings-sync` 的既有配置。你需要重新配置一次 WebDAV 等服务。
+> 2. **停用原版**：建议在启用本插件前，先手动**停用/禁用**原有的 `terminus-cloud-settings-sync` 插件，以确保功能正常且互不干扰。
+> 3. **版本号说明**：本插件目前设定为 `1.6.6` 版本，旨在确保能覆盖原版的同时，避免由于版本低于原版而弹出的更新提醒。如果原作者后续重新积极维护并修复了 WebDAV 问题，我们可能会考虑关闭版本检查功能或建议用户迁回。
+> 4. **关于 PR**：本项目主要是基于辅助编码（AI coding）快速修复问题的产物，未经深度重构和长时间调研，因此暂时不打算向原仓库提交 Pull Request。
+
 ---
 
 ### Plugin for Tabby SSH https://github.com/Eugeny/tabby
