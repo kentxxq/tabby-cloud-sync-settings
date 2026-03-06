@@ -38,49 +38,18 @@ Current platforms supported: **MacOS** **Windows** **Linux**
 
 This plugin is **FREE** of use under public license MIT.
 
-## Current supported Cloud Services
-
-----
-
-![](./screenshots/cloud-services/cloud-services-s3.png)
-![](./screenshots/cloud-services/cloud-services-webdav.png)
-![](./screenshots/cloud-services/cloud-services-ftp.png)
-![](./screenshots/cloud-services/cloud-services-wasabi.png)
-![](./screenshots/cloud-services/cloud-services-digitalocean.png)
-![](./screenshots/cloud-services/cloud-services-blackblaze.png)
-![](./screenshots/cloud-services/cloud-services-github.png)
-![](./screenshots/cloud-services/cloud-services-gitlab.png)
-![](./screenshots/cloud-services/cloud-services-koofr.png)
-![](./screenshots/cloud-services/cloud-services-dropbox.png)
-
-## Checkout some screenshots
-
-----
-
-![](./screenshots/2021-08-07_11-12-03.png)
-
-![](./screenshots/2021-08-07_11-14-51.png)
-
-![](./screenshots/2021-08-07_11-52-28.png)
-
-![](./screenshots/2021-08-07_11-53-34.png)
-
-Plugin support vary amount of cloud services. More clouds will be supported soon in the future.
-
-Any feedback will be appreciated for next version releases.
-Hope you will like this plugin for your productivity work.
-
-### Love the plugin? Buy me a coffee.
-
-----
-
-[![Donate to TranIT](https://tranit.co/donate-tranit.png)](https://donorbox.org/tabby-cloud-sync-settings-donation)
 
 # Change logs
 
 ----
 
 Keep tracking of version release change logs
+
+## [v1.6.9] - 2026-03-06
+
+### 变更 (Changes)
+- 简化 README 内容，移除原项目的截图、云服务展示及捐赠链接。
+- 优化 Taskfile.yml 任务日志输出。
 
 ## [v1.6.8] - 2026-03-06
 
