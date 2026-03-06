@@ -85,6 +85,11 @@ class WebDav {
             })
         } catch (e) {
             logger.log(CloudSyncLang.trans('log.read_cloud_settings') + ' | Remote file: ' + remoteFile + ' | Exception: ' + e.toString())
+            if (!firstInit) {
+                // 自动同步时，远程文件不可达则静默跳过，等待下次同步周期重试（auto sync: skip silently, retry next cycle）
+                logger.log('Auto sync: remote file unreachable, will retry next cycle.')
+                return result
+            }
             try {
                 await client.putFileContents(remoteFile, SettingsHelper.readTabbyConfigFile(platform, true, true), { overwrite: true })
                 isAbleToLoadRemoteContent = true
@@ -97,16 +102,20 @@ class WebDav {
 
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         if (!isAbleToLoadRemoteContent) {
-            if ((await platform.showMessageBox({
-                type: 'warning',
-                message: 'Seem to be server has no file or the setting file is corrupted. Do you want to push local file to the cloud?',
-                buttons: ['Cancel', 'Yes'],
-                defaultId: 0,
-            })).response === 1) {
-                await client.putFileContents(remoteFile, SettingsHelper.readTabbyConfigFile(platform, true, true), { overwrite: true })
-                result['result'] = true
+            if (firstInit) {
+                // 仅首次初始化时弹窗询问用户（only prompt user during first init）
+                if ((await platform.showMessageBox({
+                    type: 'warning',
+                    message: 'Seem to be server has no file or the setting file is corrupted. Do you want to push local file to the cloud?',
+                    buttons: ['Cancel', 'Yes'],
+                    defaultId: 0,
+                })).response === 1) {
+                    await client.putFileContents(remoteFile, SettingsHelper.readTabbyConfigFile(platform, true, true), { overwrite: true })
+                    result['result'] = true
+                }
             } else {
-                // Do Nothing
+                // 自动同步时静默跳过，等待下次周期重试（auto sync: skip silently, retry next cycle）
+                logger.log('Auto sync: unable to load remote content, will retry next cycle.')
             }
         }
         return result

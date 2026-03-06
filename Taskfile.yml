@@ -1,0 +1,23 @@
+version: '3'
+
+vars:
+  PLUGIN_NAME: tabby-sync-kentxxq
+  # 根据你之前的反馈，macOS 上的 Tabby 插件路径
+  TABBY_PLUGINS_DIR: '{{.HOME}}/Library/Application Support/tabby/plugins/node_modules'
+
+tasks:
+  default:
+    cmds:
+      - task: build
+
+  build:
+    desc: 执行生产环境构建
+    cmds:
+      - pnpm run build
+
+
+  publish:
+    desc: 构建并发布到 npm (请确保已登录 npm)
+    cmds:
+      - task: build
+      - pnpm publish
