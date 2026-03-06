@@ -82,14 +82,39 @@ Hope you will like this plugin for your productivity work.
 
 Keep tracking of version release change logs
 
+## [v1.6.8] - 2026-03-06
+
+### 修复 (Fixes)
+- 修复 `syncLocalSettingsToCloud` 中 `isSyncingInProgress` 锁不释放的 bug，使用 `try/finally` 确保锁一定被释放。
+- 当同步被跳过时（锁未释放），增加日志输出，方便排查问题。
+- 修复自动同步定时器异常中断后不再恢复的问题，确保同步周期连续运行。
+- 优化远程文件不存在时的处理逻辑，自动上传本地配置到云端而非弹出错误提示。
+
+### 新增 (Features)
+- 新增 Taskfile.yml 构建配置，支持 `task build` / `task publish` 等快捷命令。
+
 ## [v1.6.7] - 2026-03-05
 
-- 更新 README.md 中的安装指南与注意事项。
+- 升级版本号并更新 README.md 中的安装指南与注意事项。
 
 ## [v1.6.6] - 2026-03-05
 
-- 修复了 WebDAV 同步问题。
-- 说明 fork 来源。
+### 修复 (Fixes)
+- **修复 WebDAV 同步核心 bug**：将 `fs.stat` 回调方式替换为 `fs.statSync`，解决异步逻辑导致同步操作实际未执行的问题（对应 [issue #69](https://github.com/niceit/tabby-cloud-sync-settings/issues/69)）。
+- 修复 `isAbleToLoadRemoteContent` 误判逻辑，避免上传成功后仍弹出 "server has no file or the setting file is corrupted" 错误提示。
+- 替换 `node-sass` 为 `sass` (Dart Sass)，修复 macOS Apple Silicon (arm64) 上无法编译的问题。
+- 降级 `webpack` 至 `5.88.2`，修复 `CompatibilityPlugin` 解析错误。
+- 新增 `.npmrc` 配置 `shamefully-hoist=true`，兼容 pnpm 的依赖提升。
+
+### 新增 (Features)
+- 插件重命名为 `tabby-sync-kentxxq`，独立配置文件避免与原版冲突。
+- 新增手动同步按钮：支持从设置页面手动触发 "Sync from Cloud" 和 "Sync to Cloud"。
+- 增强 WebDAV 同步过程的日志输出，方便调试排查。
+
+### 变更 (Changes)
+- 配置文件名更新为 `tabby-sync-kentxxq-settings.json` / `tabby-sync-kentxxq-cloud.json`。
+- 菜单标题更新为 "Tabby Sync (kentxxq)"。
+
 
 ## [v1.6.5] - 2024-10-14
 
