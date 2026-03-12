@@ -47,7 +47,22 @@ class AmazonS3Class {
         this.appSecret = appSecret
         this.bucket = bucket
         this.region = region
-        this.path = inputPath === '/' ? '' : inputPath
+        let normalizedPath = (inputPath || '').trim()
+        if (!normalizedPath || normalizedPath === '/') {
+            this.path = ''
+            return
+        }
+        while (normalizedPath.startsWith('/')) {
+            normalizedPath = normalizedPath.substr(1)
+        }
+        if (!normalizedPath) {
+            this.path = ''
+            return
+        }
+        if (!normalizedPath.endsWith('/')) {
+            normalizedPath += '/'
+        }
+        this.path = normalizedPath
     }
 
     /**
@@ -94,11 +109,7 @@ class AmazonS3Class {
         let remoteFile = ''
         let remoteSyncConfigUpdatedAt = null
 
-        if (this.path === '') {
-            remoteFile = CloudSyncSettingsData.cloudSettingsFilename.substr(1, CloudSyncSettingsData.cloudSettingsFilename.length)
-        } else {
-            remoteFile = this.path + CloudSyncSettingsData.cloudSettingsFilename
-        }
+        remoteFile = this.path + CloudSyncSettingsData.cloudSettingsFilename
 
         const uploadObjectParams = {
             Bucket: this.bucket,
@@ -138,7 +149,7 @@ class AmazonS3Class {
                             }
                         }
                     } else {
-                        const filePath = path.dirname(platform.getConfigPath()) + CloudSyncSettingsData.tabbySettingsFilename
+                        const filePath = path.join(path.dirname(platform.getConfigPath()), CloudSyncSettingsData.tabbySettingsFilename)
                         let localFileUpdatedAt = null
                         // eslint-disable-next-line @typescript-eslint/await-thenable,@typescript-eslint/no-confusing-void-expression
                         await fs.stat(filePath, (err, stats) => {
@@ -204,11 +215,7 @@ class AmazonS3Class {
             const params = savedConfigs.configs
             const client = this.createClient(params, platform)
             let remoteFile = ''
-            if (this.path === '') {
-                remoteFile = CloudSyncSettingsData.cloudSettingsFilename.substr(1, CloudSyncSettingsData.cloudSettingsFilename.length)
-            } else {
-                remoteFile = this.path + CloudSyncSettingsData.cloudSettingsFilename
-            }
+            remoteFile = this.path + CloudSyncSettingsData.cloudSettingsFilename
 
             let response: any = {}
             const uploadObjectParams = {

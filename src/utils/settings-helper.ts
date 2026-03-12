@@ -33,7 +33,7 @@ export class SettingsHelperClass {
 
     // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
     async saveSettingsToFile (platform: PlatformService, adapter: string, params: any): Promise<any> {
-        const filePath = path.dirname(platform.getConfigPath()) + CloudSyncSettingsData.storedSettingsFilename
+        const filePath = path.join(path.dirname(platform.getConfigPath()), CloudSyncSettingsData.storedSettingsFilename)
         const settingsArr = {
             adapter: adapter,
             enabled: true,
@@ -70,7 +70,7 @@ export class SettingsHelperClass {
     }
 
     async generateEncryptedTabbyFileForUpload (platform: PlatformService): Promise<any> {
-        const filePath = path.dirname(platform.getConfigPath()) + CloudSyncSettingsData.tabbyLocalEncryptedFile
+        const filePath = path.join(path.dirname(platform.getConfigPath()), CloudSyncSettingsData.tabbyLocalEncryptedFile)
         try {
             const tabbyConfig = this.readTabbyConfigFile(platform, true, true)
             const promise = new Promise((resolve, reject) => {
@@ -139,7 +139,7 @@ export class SettingsHelperClass {
 
     readConfigFile (platform: PlatformService, isRaw = false): any {
         let data = null
-        const filePath = path.dirname(platform.getConfigPath()) + CloudSyncSettingsData.storedSettingsFilename
+        const filePath = path.join(path.dirname(platform.getConfigPath()), CloudSyncSettingsData.storedSettingsFilename)
         if (fs.existsSync(filePath)) {
             try {
                 const bytes = CryptoJS.AES.decrypt(fsReadFile(filePath, 'utf8').replace(CloudSyncLang.trans('common.config_inject_header'), ''), this.generatedCryptoHash)
@@ -154,7 +154,7 @@ export class SettingsHelperClass {
 
     readTabbyConfigFile (platform: PlatformService, isRaw = false, isEncrypt = false): any {
         let data = null
-        const filePath = path.dirname(platform.getConfigPath()) + CloudSyncSettingsData.tabbySettingsFilename
+        const filePath = path.join(path.dirname(platform.getConfigPath()), CloudSyncSettingsData.tabbySettingsFilename)
         if (fs.existsSync(filePath)) {
             try {
                 const content = fsReadFile(filePath, 'utf8')
@@ -169,12 +169,12 @@ export class SettingsHelperClass {
     }
 
     async backupTabbyConfigFile (platform: PlatformService): Promise<any> {
-        const filePath = path.dirname(platform.getConfigPath()) + CloudSyncSettingsData.tabbySettingsFilename
+        const filePath = path.join(path.dirname(platform.getConfigPath()), CloudSyncSettingsData.tabbySettingsFilename)
         if (fs.existsSync(filePath)) {
             try {
                 const content = fsReadFile(filePath, 'utf8')
                 try {
-                    const backupFilePath = path.dirname(platform.getConfigPath()) + CloudSyncSettingsData.tabbySettingsFilename + '.backup'
+                    const backupFilePath = path.join(path.dirname(platform.getConfigPath()), CloudSyncSettingsData.tabbySettingsFilename + '.backup')
                     const promise = new Promise((resolve, reject) => {
                         return fs.writeFile(backupFilePath, content,
                             (err) => {
@@ -198,7 +198,7 @@ export class SettingsHelperClass {
     }
 
     async saveIntervalSync (value: number, platform: PlatformService, toast: ToastrService): Promise<any> {
-        const filePath = path.dirname(platform.getConfigPath()) + CloudSyncSettingsData.storedSettingsFilename
+        const filePath = path.join(path.dirname(platform.getConfigPath()), CloudSyncSettingsData.storedSettingsFilename)
         if (!fs.existsSync(filePath)) {
             toast.error(CloudSyncLang.trans('sync.need_to_save_config'))
             return false
@@ -234,7 +234,7 @@ export class SettingsHelperClass {
     }
 
     async toggleEnabledPlugin (value: boolean, platform: PlatformService, toast: ToastrService): Promise<any> {
-        const filePath = path.dirname(platform.getConfigPath()) + CloudSyncSettingsData.storedSettingsFilename
+        const filePath = path.join(path.dirname(platform.getConfigPath()), CloudSyncSettingsData.storedSettingsFilename)
         if (!fs.existsSync(filePath)) {
             toast.error(CloudSyncLang.trans('sync.need_to_save_config'))
             return false
@@ -271,7 +271,7 @@ export class SettingsHelperClass {
     }
 
     async toggleEnabledShowLoader (value: boolean, platform: PlatformService, toast: ToastrService): Promise<any> {
-        const filePath = path.dirname(platform.getConfigPath()) + CloudSyncSettingsData.storedSettingsFilename
+        const filePath = path.join(path.dirname(platform.getConfigPath()), CloudSyncSettingsData.storedSettingsFilename)
         if (!fs.existsSync(filePath)) {
             toast.error(CloudSyncLang.trans('sync.need_to_save_config'))
             return false
@@ -330,10 +330,10 @@ export class SettingsHelperClass {
     }
 
     _removeSavedConfig (platform: PlatformService, toast: ToastrService): boolean {
-        const filePath = path.dirname(platform.getConfigPath()) + CloudSyncSettingsData.storedSettingsFilename
+        const filePath = path.join(path.dirname(platform.getConfigPath()), CloudSyncSettingsData.storedSettingsFilename)
         if (fs.existsSync(filePath)) {
             try {
-                fs.unlinkSync(path.dirname(platform.getConfigPath()) + CloudSyncSettingsData.storedSettingsFilename)
+                fs.unlinkSync(path.join(path.dirname(platform.getConfigPath()), CloudSyncSettingsData.storedSettingsFilename))
                 toast.info(CloudSyncLang.trans('sync.remove_setting_success'))
                 return true
             } catch (e) {

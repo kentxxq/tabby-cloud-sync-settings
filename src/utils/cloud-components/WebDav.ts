@@ -17,7 +17,7 @@ class WebDav {
         const logger = new Logger(platform)
         const result = { result: false, message: '' }
         const client = WebDav.createClient(params)
-        const remoteFile = params.location + CloudSyncSettingsData.cloudSettingsFilename
+        const remoteFile = WebDav.getRemoteFilePath(params.location)
         let remoteSyncConfigUpdatedAt = null
         let isAbleToLoadRemoteContent = false
 
@@ -50,7 +50,7 @@ class WebDav {
                                 }
                             }
                         } else {
-                            const filePath = path.dirname(platform.getConfigPath()) + CloudSyncSettingsData.tabbySettingsFilename
+                            const filePath = path.join(path.dirname(platform.getConfigPath()), CloudSyncSettingsData.tabbySettingsFilename)
                             let localFileUpdatedAt = null
                             try {
                                 // 使用 statSync 替代回调版 fs.stat，确保同步逻辑正确执行
@@ -128,7 +128,7 @@ class WebDav {
 
             const savedConfigs = SettingsHelper.readConfigFile(platform)
             const params = savedConfigs.configs
-            const remoteFile = params.location + CloudSyncSettingsData.cloudSettingsFilename
+            const remoteFile = WebDav.getRemoteFilePath(params.location)
             const client = WebDav.createClient(params)
 
             try {
@@ -151,11 +151,38 @@ class WebDav {
     }
 
     private static createClient(params) {
-        return createClient(params.host + (params.port ? ':' + params.port : ''), {
+        return createClient(WebDav.normalizeBaseURL(params.host, params.port), {
             authType: AuthType.Password,
             username: params.username,
             password: params.password,
         })
+    }
+
+    private static normalizeBaseURL(host: string, port: string): string {
+        let rawHost = (host || '').trim()
+        if (!/^https?:\/\//i.test(rawHost)) {
+            rawHost = 'https://' + rawHost
+        }
+
+        try {
+            const parsed = new URL(rawHost)
+            if (port && port.trim()) {
+                parsed.port = port.trim()
+            }
+            return parsed.toString().replace(/\/$/, '')
+        } catch {
+            return rawHost + (port ? ':' + port : '')
+        }
+    }
+
+    private static getRemoteFilePath(location: string): string {
+        const normalizedLocation = WebDav.normalizeLocationPath(location)
+        return normalizedLocation + CloudSyncSettingsData.cloudSettingsFilename
+    }
+
+    private static normalizeLocationPath(location: string): string {
+        const normalized = (location || '').trim()
+        return normalized.endsWith('/') ? normalized : normalized + '/'
     }
 }
 export default new WebDav()

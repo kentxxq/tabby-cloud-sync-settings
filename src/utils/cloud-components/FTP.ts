@@ -24,8 +24,8 @@ class FTP {
         }
 
         const client: Client = this.ftpClient
-        const remoteFile = params.location + CloudSyncSettingsData.cloudSettingsFilename
-        const tempFileLocal = path.dirname(platform.getConfigPath()) +  '/tabby-sync.tmp'
+        const remoteFile = FTP.getRemoteFilePath(params.location)
+        const tempFileLocal = path.join(path.dirname(platform.getConfigPath()), 'tabby-sync.tmp')
         let remoteSyncConfigUpdatedAt = null
 
         try {
@@ -57,7 +57,7 @@ class FTP {
                         await client.lastMod(remoteFile).then(async mTime => {
                             remoteSyncConfigUpdatedAt = moment(mTime)
 
-                            const filePath = path.dirname(platform.getConfigPath()) + CloudSyncSettingsData.tabbySettingsFilename
+                            const filePath = path.join(path.dirname(platform.getConfigPath()), CloudSyncSettingsData.tabbySettingsFilename)
                             let localFileUpdatedAt = null
                             // eslint-disable-next-line @typescript-eslint/await-thenable,@typescript-eslint/no-confusing-void-expression
                             await fs.stat(filePath, (err, stats) => {
@@ -109,10 +109,10 @@ class FTP {
     }
 
     private async uploadLocalSettings (params, client, platform, toast) {
-        const remoteFile = params.location + CloudSyncSettingsData.cloudSettingsFilename
+        const remoteFile = FTP.getRemoteFilePath(params.location)
         await SettingsHelper.generateEncryptedTabbyFileForUpload(platform).then(async status => {
             if (status) {
-                await client.uploadFrom(path.dirname(platform.getConfigPath()) + CloudSyncSettingsData.tabbyLocalEncryptedFile, remoteFile).then(result => {
+                await client.uploadFrom(path.join(path.dirname(platform.getConfigPath()), CloudSyncSettingsData.tabbyLocalEncryptedFile), remoteFile).then(result => {
                     if (result.code !== 226) {
                         toast.error(CloudSyncLang.trans('sync.sync_error'))
                     }
@@ -131,8 +131,8 @@ class FTP {
 
             const savedConfigs = SettingsHelper.readConfigFile(platform)
             const params = savedConfigs.configs
-            const localFile = path.dirname(platform.getConfigPath()) + CloudSyncSettingsData.tabbyLocalEncryptedFile
-            const remoteFile = params.location + CloudSyncSettingsData.cloudSettingsFilename
+            const localFile = path.join(path.dirname(platform.getConfigPath()), CloudSyncSettingsData.tabbyLocalEncryptedFile)
+            const remoteFile = FTP.getRemoteFilePath(params.location)
 
             if (!this.ftpClient) {
                 this.ftpClient = await FTP.createClient(params)
@@ -184,6 +184,17 @@ class FTP {
         })
 
         return client
+    }
+
+    private static getRemoteFilePath (location: string): string {
+        let remotePath = (location || '').trim()
+        if (!remotePath) {
+            remotePath = '/'
+        }
+        if (!remotePath.endsWith('/')) {
+            remotePath += '/'
+        }
+        return remotePath + CloudSyncSettingsData.cloudSettingsFilename
     }
 }
 export default new FTP()

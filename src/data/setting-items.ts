@@ -33,10 +33,10 @@ const API_URL = `${DevEnv.ENABLE_DEBUG ? 'http' : 'https'}://tabby-api.tranit.${
 
 const CloudSyncSettingsData = {
     defaultSyncInterval: 20, // 20 seconds
-    tabbySettingsFilename: '/config.yaml',
-    storedSettingsFilename: '/tabby-sync-kentxxq-settings' + (DevEnv.ENABLE_DEBUG ? '-dev' : '') + '.json',
-    cloudSettingsFilename: '/tabby-sync-kentxxq-cloud' + (DevEnv.ENABLE_DEBUG ? '-dev' : '') + '.json',
-    tabbyLocalEncryptedFile: '/tabby-settings-encrypted.tmp',
+    tabbySettingsFilename: 'config.yaml',
+    storedSettingsFilename: 'tabby-sync-kentxxq-settings' + (DevEnv.ENABLE_DEBUG ? '-dev' : '') + '.json',
+    cloudSettingsFilename: 'tabby-sync-kentxxq-cloud' + (DevEnv.ENABLE_DEBUG ? '-dev' : '') + '.json',
+    tabbyLocalEncryptedFile: 'tabby-settings-encrypted.tmp',
     values: providerConstantItems,
     amazonEndpoints: amazonCompatibilityEndpoints,
     serviceProvidersList: [
@@ -123,7 +123,7 @@ const CloudSyncSettingsData = {
             host: '',
             username: '',
             password: '',
-            location: '',
+            location: '/',
             port: '443',
         },
         [providerConstantItems.FTP]: {

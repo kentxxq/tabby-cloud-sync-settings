@@ -107,7 +107,7 @@ class Github extends Gist {
                     }
                 }
             } else {
-                const filePath = path.dirname(platform.getConfigPath()) + CloudSyncSettingsData.tabbySettingsFilename
+                const filePath = path.join(path.dirname(platform.getConfigPath()), CloudSyncSettingsData.tabbySettingsFilename)
                 let localFileUpdatedAt = null
                 await fs.stat(filePath, (err, stats) => {
                     //Checking for errors

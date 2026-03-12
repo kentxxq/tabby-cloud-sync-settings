@@ -80,10 +80,11 @@ export class CloudSyncAmazonSettingsComponent implements OnInit {
     }
 
     correctLocationPath (): void {
-        if (this.form.location !== '/') {
-            this.form.location = this.form.location.endsWith('/')
-                ? this.form.location.substr(0, this.form.location.length - 1)
-                : this.form.location
+        if (!this.form.location) {
+            this.form.location = '/'
+        }
+        if (!this.form.location.endsWith('/')) {
+            this.form.location += '/'
         }
     }
 
