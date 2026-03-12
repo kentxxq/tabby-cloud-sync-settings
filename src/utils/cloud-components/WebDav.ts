@@ -176,7 +176,13 @@ class WebDav {
     }
 
     private static getRemoteFilePath(location: string): string {
-        return (location || '').trim() + CloudSyncSettingsData.cloudSettingsFilename
+        const normalizedLocation = WebDav.normalizeLocationPath(location)
+        return normalizedLocation + CloudSyncSettingsData.cloudSettingsFilename
+    }
+
+    private static normalizeLocationPath(location: string): string {
+        const normalized = (location || '').trim()
+        return normalized.endsWith('/') ? normalized : normalized + '/'
     }
 }
 export default new WebDav()

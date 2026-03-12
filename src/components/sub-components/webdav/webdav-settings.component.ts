@@ -74,7 +74,8 @@ export class CloudSyncWebDavSettingsComponent implements OnInit {
                 password: this.form.password,
             })
             this.isFormProcessing = true
-            const testFilePath = (this.form.location || '').trim() + 'test.txt'
+            this.form.location = this.normalizeLocationPath(this.form.location)
+            const testFilePath = this.form.location + 'test.txt'
 
             try {
                 await client.putFileContents(testFilePath, 'Test content', { overwrite: true }).then(() => {
@@ -112,6 +113,11 @@ export class CloudSyncWebDavSettingsComponent implements OnInit {
         } catch {
             return rawHost + (port ? ':' + port : '')
         }
+    }
+
+    private normalizeLocationPath (location: string): string {
+        const normalized = (location || '').trim()
+        return normalized.endsWith('/') ? normalized : normalized + '/'
     }
 
     async saveSettings(): Promise<void> {
