@@ -43,7 +43,7 @@ class DropboxSync {
 
         this._isFirstInit = firstInit
         const result = { result: false, message: '' }
-        const remoteFile = params.location + CloudSyncSettingsData.cloudSettingsFilename
+        const remoteFile = this.getRemoteFilePath(params.location)
         let remoteSyncConfigUpdatedAt = null
         const dbx = new Dropbox({ accessToken: params.accessToken })
 
@@ -93,7 +93,7 @@ class DropboxSync {
                             }
                         }
                     } else {
-                        const filePath = path.dirname(platform.getConfigPath()) + CloudSyncSettingsData.tabbySettingsFilename
+                        const filePath = path.join(path.dirname(platform.getConfigPath()), CloudSyncSettingsData.tabbySettingsFilename)
                         let localFileUpdatedAt = null
                         // eslint-disable-next-line @typescript-eslint/await-thenable,@typescript-eslint/no-confusing-void-expression
                         fs.stat(filePath, (err, stats: any) => {
@@ -204,7 +204,7 @@ class DropboxSync {
 
             const savedConfigs = SettingsHelper.readConfigFile(platform)
             const params = savedConfigs.configs
-            const remoteFile = params.location + CloudSyncSettingsData.cloudSettingsFilename
+            const remoteFile = this.getRemoteFilePath(params.location)
 
             try {
                 const dbx = new Dropbox({ accessToken: params.accessToken })
@@ -260,6 +260,17 @@ class DropboxSync {
             }
             isSyncingInProgress = false
         }
+    }
+
+    private getRemoteFilePath (location: string): string {
+        let remotePath = (location || '').trim()
+        if (!remotePath) {
+            remotePath = '/'
+        }
+        if (!remotePath.endsWith('/')) {
+            remotePath += '/'
+        }
+        return remotePath + CloudSyncSettingsData.cloudSettingsFilename
     }
 }
 export default new DropboxSync()

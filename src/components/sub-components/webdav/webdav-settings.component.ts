@@ -67,27 +67,24 @@ export class CloudSyncWebDavSettingsComponent implements OnInit {
         }
 
         if (isFormValidated) {
-            const client = createClient(this.form.host + (this.form.port ? ':' + this.form.port : ''), {
+            const baseURL = this.normalizeBaseURL(this.form.host, this.form.port)
+            const client = createClient(baseURL, {
                 authType: AuthType.Password,
                 username: this.form.username,
                 password: this.form.password,
             })
             this.isFormProcessing = true
-            if (this.form.location !== '/') {
-                this.form.location = this.form.location.endsWith('/')
-                    ? this.form.location.substr(0, this.form.location.length - 1)
-                    : this.form.location
-            }
+            const testFilePath = (this.form.location || '').trim() + 'test.txt'
 
             try {
-                await client.putFileContents(this.form.location + 'test.txt', 'Test content', { overwrite: true }).then(() => {
+                await client.putFileContents(testFilePath, 'Test content', { overwrite: true }).then(() => {
                     this.isFormProcessing = false
                     this.isCheckLoginSuccess = true
                     this.setFormMessage.emit({
                         message: Lang.trans('sync.setting_valid'),
                         type: 'success',
                     })
-                    client.deleteFile(this.form.location + 'test.txt')
+                    client.deleteFile(testFilePath)
                 })
             } catch (e) {
                 this.isFormProcessing = false
@@ -97,6 +94,23 @@ export class CloudSyncWebDavSettingsComponent implements OnInit {
                 })
                 logger.log(CloudSyncLang.trans('log.error_test_connection') + ' | Exception: ' + e.toString(), 'error')
             }
+        }
+    }
+
+    private normalizeBaseURL (host: string, port: string): string {
+        let rawHost = (host || '').trim()
+        if (!/^https?:\/\//i.test(rawHost)) {
+            rawHost = 'https://' + rawHost
+        }
+
+        try {
+            const parsed = new URL(rawHost)
+            if (port && port.trim()) {
+                parsed.port = port.trim()
+            }
+            return parsed.toString().replace(/\/$/, '')
+        } catch {
+            return rawHost + (port ? ':' + port : '')
         }
     }
 

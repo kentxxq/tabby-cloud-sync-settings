@@ -76,10 +76,11 @@ export class CloudSyncFtpSettingsComponent implements OnInit {
         }
 
         if (isFormValidated) {
-            if (this.form.location !== '/') {
-                this.form.location = this.form.location.endsWith('/')
-                    ? this.form.location.substr(0, this.form.location.length - 1)
-                    : this.form.location
+            if (!this.form.location) {
+                this.form.location = '/'
+            }
+            if (!this.form.location.endsWith('/')) {
+                this.form.location += '/'
             }
 
             this.isFormProcessing = true
