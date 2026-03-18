@@ -10,7 +10,6 @@ tasks:
   publish:
     desc: 构建并发布到 npm
     cmds:
-      - task: build
       - echo ">>> 发布中..."
       - pnpm login --registry=https://registry.npmjs.org
       - pnpm publish --no-git-checks
